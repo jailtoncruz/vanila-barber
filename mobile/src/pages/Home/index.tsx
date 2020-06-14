@@ -1,37 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ImageBackground, Animated, Dimensions, TouchableOpacity } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
-import { Feather as Icon } from '@expo/vector-icons';
-
-import Login from './Login'
+import { useNavigation } from '@react-navigation/native'
 
 const Home = () => {
-    const modal = useRef(new Animated.Value(-Dimensions.get('screen').height * 0.7)).current;
-    const [modalIsOpen, setModalIsOpen] = useState(false);
 
-    function handleModal () {
-        setModalIsOpen(!modalIsOpen);
-        if(modalIsOpen === true) {
-            modalOpen()
-        } else {
-            modalClosed()
-        }
+    const navigation = useNavigation();
+
+    function handleLoginModal() {
+        navigation.navigate('Login');
     }
-
-    const modalOpen = () => {
-        Animated.timing(modal, {
-          toValue: 0,
-          duration: 700
-        }).start();
-      };
-    
-      const modalClosed = () => {
-        Animated.timing(modal, {
-          toValue: -Dimensions.get('screen').height * 0.7,
-          duration: 700
-        }).start();
-      };
-    
 
     return (
         <ImageBackground
@@ -43,20 +21,10 @@ const Home = () => {
                     <Text style={styles.titleApp}>Vanila Barber</Text>
                     <Text style={styles.description}>Seu barbeiro a um toque de distancia.</Text>
                 </View>
-                <RectButton style={styles.button} onPress={handleModal}>
+                <RectButton style={styles.button} onPress={handleLoginModal}>
                     <Text style={styles.buttonText}>Começar</Text>
                 </RectButton>
             </View>
-
-            <Animated.View style={[styles.modal, {
-                bottom: modal
-            }]}>
-                <TouchableOpacity style={styles.back} onPress={handleModal}>
-                    <Icon name="arrow-left" size={24} color="#000" />
-                </TouchableOpacity>
-                <Login />
-            </Animated.View>
-
         </ImageBackground>
     )
 }

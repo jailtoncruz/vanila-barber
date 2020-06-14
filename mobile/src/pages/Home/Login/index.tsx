@@ -1,90 +1,88 @@
 import React from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
+
+import LoginSocial from '../../../components/LoginSocial'
 
 const Login = () => {
+    const navigation = useNavigation();
+
+    function handleLogin() {
+        navigation.navigate("Dashboard");
+    }
+
+    function handleForgot() {
+        navigation.navigate("Forgot");
+    }
+
+    function handleSingIn() {
+        navigation.navigate("Signin");
+    }
     return (
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Entrar</Text>
             </View>
-            <View style={styles.divider}/>
 
-            <Text style={styles.label}>E-mail</Text>
-            <TextInput 
-                style={styles.input}
-                autoCorrect={false}
-            />
+            <View>
+                <Text style={styles.label}>E-mail</Text>
+                <TextInput 
+                    style={styles.input}
+                    autoCorrect={false}
+                />
 
-            <Text style={styles.label}>Senha</Text>
-            <TextInput 
-                style={styles.input}
-                autoCorrect={false}
-            />
+                <Text style={styles.label}>Senha</Text>
+                <TextInput 
+                    style={styles.input}
+                    autoCorrect={false}
+                    autoCompleteType="password"
+                    textContentType="password"
+                    secureTextEntry={true}
+                />
 
-            <RectButton style={styles.button}>
-                <Text style={styles.buttonText}>Entrar</Text>
-            </RectButton>
-
-            <Text style={styles.options}>Ainda não tem cadastro?</Text>
-            <Text style={styles.options}>Esqueceu a senha?</Text>
-
-            <View style={styles.shadow}>
-                <RectButton style={[styles.buttonSocial, {
-                    backgroundColor: "#FFF"
-                }]}>
-                    <Image style={styles.socialLogo} source={require('../../../assets/social/google.png')}/>
-                    <Text style={styles.buttonSocialText}>Continuar com o Google</Text>
+                <RectButton style={styles.button} onPress={handleLogin}>
+                    <Text style={styles.buttonText} >Entrar</Text>
                 </RectButton>
+
+                <TouchableOpacity onPress={handleSingIn}>
+                    <Text style={styles.options}>Ainda não tem cadastro?</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={handleForgot}>
+                    <Text style={styles.options}>Esqueceu a senha?</Text>
+                </TouchableOpacity>
             </View>
 
-            <View style={styles.shadow}>
-                <RectButton style={[styles.buttonSocial, {
-                    backgroundColor: "#3B5998"
-                }]}>
-                    <Image style={styles.socialLogo} source={require('../../../assets/social/facebook.png')}/>
-                    <Text style={[styles.buttonSocialText, {
-                        color: "#FFF"
-                    }]}>Continuar com o Facebook</Text>
-                </RectButton>
-            </View>
-
-            <View style={styles.shadow}>
-                <RectButton style={[styles.buttonSocial, {
-                    backgroundColor: "#000"
-                }]}>
-                    <Image style={styles.socialLogo} source={require('../../../assets/social/apple.png')}/>
-                    <Text style={[styles.buttonSocialText, {
-                        color: "#FFF"
-                    }]}>Continuar com a Apple</Text>
-                </RectButton>
-            </View>
-        </ScrollView>
+            <LoginSocial />
+        </View>
     )
 }
 
 export default Login;
 
 const styles = StyleSheet.create({
+    container: {
+        paddingHorizontal: 20,
+        paddingVertical: 20,
+        backgroundColor: '#FFF',
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+        flex: 1
+    },
     header: {
-        width: "100%",
-        height: 80,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        paddingTop: 50
     },
     title: {
-        fontSize: 26,
+        fontSize: 24,
         fontFamily: 'Ubuntu_500Medium'    
-    },
-    divider: {
-        borderTopColor: "#DBD3CD",
-        borderTopWidth: 1,
-        marginBottom: 10
     },
     label: {
         fontFamily: "Ubuntu_400Regular",
         color: "#595959",
-        fontSize: 14,
+        fontSize: 12,
         marginVertical: 10,
         lineHeight: 21
     },
@@ -94,7 +92,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 8,
         paddingHorizontal: 24,
-        fontSize: 16,
+        fontSize: 14,
       },
       button: {
         width: '100%',
@@ -107,46 +105,16 @@ const styles = StyleSheet.create({
         marginVertical: 10
       },
     buttonText: {
-        marginLeft: 8,
         color: '#FFF',
-        fontSize: 20,
+        fontSize: 16,
         fontFamily: 'Ubuntu_500Medium'
       },
     options: {
         fontFamily: "Ubuntu_400Regular",
         color: "#595959",
-        fontSize: 16,
+        fontSize: 14,
         marginVertical: 5,
-        textAlign: "center"
-    },
-    buttonSocial: {
-        width: '100%',
-        borderRadius: 8,
-        height: 50,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginVertical: 2,
-        paddingHorizontal: 30
-      },
-    buttonSocialText: {
-        marginLeft: 8,
-        fontSize: 16,
-        fontFamily: 'Ubuntu_400Regular'
-      },
-      shadow: {
-        elevation: 1,
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 1,
-          height: 1
-      },
-      shadowRadius: 2,
-      shadowOpacity: 0.6,
-      margin: 2
-    },
-    socialLogo: {
-        width: 20,
-        height: 20
+        textAlign: "center",
+        
     }
 })
