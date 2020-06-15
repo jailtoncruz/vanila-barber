@@ -1,26 +1,40 @@
-import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useRef }from 'react';
+import { View, Image, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
 import { Feather as Icon } from '@expo/vector-icons';
 
-const Header = () => {
+interface Props  {
+    state: boolean,
+    onMenuOpened: (state: boolean) => void,
+    handleMenuOpened: () => void
+}
+
+const Header : React.FC<Props> = ({ state, onMenuOpened, handleMenuOpened }) => {
+
+    function handleMenuOpen() {
+        onMenuOpened(!state)
+        handleMenuOpened();
+    }
+
     return (
+        <>
         <View style={styles.header}>
-                    <TouchableOpacity> 
-                        <Image source={require('../../assets/menu.png')} style={styles.menuIcon} />
-                    </TouchableOpacity>
+            <TouchableOpacity onPress={handleMenuOpen}> 
+                <Image source={require('../../assets/menu.png')} style={styles.menuIcon} />
+            </TouchableOpacity>
 
-                    <View style={styles.headerRight}>
-                        <TouchableOpacity>
-                            <Icon name="calendar" size={30} color="#FFF" style={styles.calendarIcon}/>
-                        </TouchableOpacity>
+            <View style={styles.headerRight}>
+                <TouchableOpacity>
+                    <Icon name="calendar" size={30} color="#FFF" style={styles.calendarIcon}/>
+                </TouchableOpacity>
 
-                        <TouchableOpacity>
-                            <View style={styles.userIcon}>
+                <TouchableOpacity>
+                    <View style={styles.userIcon}>
 
-                            </View>
-                        </TouchableOpacity>
                     </View>
-                </View>
+                </TouchableOpacity>
+            </View>
+        </View>
+        </>
     )
 }
 
@@ -31,7 +45,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: "space-between",
         marginTop: 50,
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingHorizontal: 20,
     },
     headerRight: {
         flexDirection: 'row',

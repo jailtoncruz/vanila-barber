@@ -1,24 +1,53 @@
-import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, StatusBar, TouchableOpacity, Image, TextInput, Animated, ScrollView } from 'react-native';
-import { Feather as Icon } from '@expo/vector-icons';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, StatusBar, TouchableOpacity, ScrollView, Animated, Dimensions } from 'react-native';
 
 import Header from '../../components/Header'
+import Map from '../../components/Map';
+import Menu from '../../components/Menu';
 
 const Dashboard = () => {
-    const searchHeight = useRef(new Animated.Value(0)).current;
     const [optionSelected, setOptionSelected] = useState(true);
+    const [menuOpened, setMenuOpened] =useState(true);
+    const menu = useRef(new Animated.Value(0)).current;
+    const opacity = useRef(new Animated.Value(0)).current;
 
-    function handleSearchOpen(scroll: number) {
-        if(scroll < 0) {
-            Animated.timing(searchHeight, {
-                toValue: 60,
-                duration: 300
-              }).start();
+    const fadeIn = () => {
+        Animated.timing(opacity, {
+          toValue: 0.7,
+          duration: 300
+        }).start();
+      };
+    
+      const fadeOut = () => {
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 300
+        }).start();
+      };
+
+    const open = () => {
+        Animated.timing(menu, {
+          toValue: 0,
+          duration: 300
+        }).start();
+      };
+    
+      const close = () => {
+        Animated.timing(menu, {
+          toValue: Dimensions.get('screen').width * 0.7,
+          duration: 300
+        }).start();
+      };
+
+    function handleMenuOpened() {
+        if(menuOpened === false) {
+            open();
+            fadeOut();
+            setMenuOpened(!menuOpened);
         } else {
-            Animated.timing(searchHeight, {
-                toValue: 0,
-                duration: 300
-              }).start();
+            close();
+            fadeIn();
+            setMenuOpened(!menuOpened);
         }
     }
 
@@ -29,25 +58,18 @@ const Dashboard = () => {
     return (
         <>
         <StatusBar barStyle="light-content"  backgroundColor="transparent"  translucent/>
-            <View style={styles.constainer}>
+        
+        <Animated.View onTouchEnd={handleMenuOpened} style={[
+            styles.overlay, 
+            { left: menu, opacity: opacity, zIndex: menuOpened ? -1 : 1 }
+            ]}></Animated.View>
 
-                <Header />
+        <Animated.View style={[styles.constainer, { left: menu }]}>
+            <Header state={menuOpened} onMenuOpened={setMenuOpened} handleMenuOpened={handleMenuOpened}/>
+            <Menu state={menuOpened} onMenuOpened={setMenuOpened} handleMenuOpened={handleMenuOpened}/>
+            <View style={styles.main}>
 
-                <Animated.View style={[styles.search, {
-                    height: searchHeight
-                }]}>
-                    <View style={styles.inputIcon}>
-                        <Icon name="search" size={21} color="#000"/>
-                    </View>
-                    <TextInput 
-                        style={styles.input}
-                        placeholder="O que tem em mente?"
-                        autoCorrect={false}
-                        />
-                </Animated.View>
-
-                <ScrollView style={styles.main} onScrollEndDrag={(data) => handleSearchOpen(data.nativeEvent.contentOffset.y)}>
-
+                <View style={{paddingHorizontal: 20}}>
                     <Text style={styles.title}>Barbeiros</Text>
                     <View style={styles.options}>
                     <TouchableOpacity onPress={handleOptionSelected}>
@@ -63,9 +85,34 @@ const Dashboard = () => {
                         ]}>Mapa</Text>
                     </TouchableOpacity>
                     </View>
+                </View>
 
+                <ScrollView style={[styles.cards, 
+                {
+                    display: optionSelected ? 'flex' : 'none'
+                }]}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false} 
+                    contentContainerStyle={{ paddingHorizontal: 20}}>
+                    <View style={styles.card}>
+
+                    </View>
+                    <View style={styles.card}>
+
+                    </View>
+                    <View style={styles.card}>
+
+                    </View>
                 </ScrollView>
+
+                <View style={{ display: optionSelected ? 'none' : 'flex', flex: 1}}>
+                    <Map />
+                </View>
+
+                
+
             </View>
+        </Animated.View>
         </>
     )
 }
@@ -76,35 +123,12 @@ const styles = StyleSheet.create({
     constainer: {
         flex: 1,
         backgroundColor: '#11181D',
-        paddingHorizontal: 20,
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
     },
-    
     main: {
-        flex: 1,        
-    },
-    
-    input: {
-        backgroundColor: '#EEEEEE',
-        borderTopRightRadius: 10,
-        borderBottomRightRadius: 10,
-        marginBottom: 8,
-        paddingHorizontal: 20,
-        fontSize: 16,
         flex: 1
-    },
-    inputIcon: {
-        backgroundColor: '#EEEEEE',
-        borderTopLeftRadius: 10,
-        borderBottomLeftRadius: 10,
-        marginBottom: 8,
-        paddingLeft: 24,
-        fontSize: 16,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    search: {
-        marginVertical: 10,
-        flexDirection: 'row'
     },
     title: {
         color: "#F2EFED",
@@ -127,5 +151,21 @@ const styles = StyleSheet.create({
     },
     disabled: {
         fontSize: 16
+    },
+    cards: {
+        marginTop: 16,
+    },
+    card: {
+        backgroundColor: '#FFF',
+        borderRadius: 25,
+        height: 350,
+        width: 300,
+        marginRight: 10
+    },
+    overlay: {
+        backgroundColor: '#000',
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
     }
 })
